@@ -10,31 +10,31 @@ public class MovieAnalysis {
     public static void main(String[] args) {
         String outputPath = "java\\src\\output.txt";
         MovieAnalysis movieAnalysis = new MovieAnalysis("java\\src\\IMDB-Movie-Data.csv");
-        // System.out.println("第一題 : 2016 年收視率最高的前三部電影的標題");
-        // FileParser.fileAppend("第一題 : 2016 年收視率最高的前三部電影的標題", outputPath);
-        // int count = 1;
-        // for(String movie : movieAnalysis.top3Movies2016()) {
-        //     System.out.println(count + ". " + movie);
-        //     FileParser.fileAppend(count + ". " + movie, outputPath);
-        //     count ++;
-        // }
-        // FileParser.fileAppend("", outputPath);
+        System.out.println("第一題 : 2016 年收視率最高的前三部電影的標題");
+        FileParser.fileAppend("第一題 : 2016 年收視率最高的前三部電影的標題", outputPath);
+        int count = 1;
+        for(String movie : movieAnalysis.top3Movies2016()) {
+            System.out.println(count + ". " + movie);
+            FileParser.fileAppend(count + ". " + movie, outputPath);
+            count ++;
+        }
+        FileParser.fileAppend("", outputPath);
 
-        // System.out.println("第二題 : 平均收入最高的演員");
-        // FileParser.fileAppend("第二題 : 平均收入最高的演員", outputPath);
-        // System.out.println(movieAnalysis.highestAvgRevenueActor());
-        // //FileParser.fileAppend(movieAnalysis.highestAvgRevenueActor(), outputPath);
-        // FileParser.fileAppend("", outputPath);
+        System.out.println("第二題 : 平均收入最高的演員");
+        FileParser.fileAppend("第二題 : 平均收入最高的演員", outputPath);
+        System.out.println(movieAnalysis.highestAvgRevenueActor());
+        //FileParser.fileAppend(movieAnalysis.highestAvgRevenueActor(), outputPath);
+        FileParser.fileAppend("", outputPath);
 
-        // System.out.println("第三題 : 艾瑪華森電影的平均分數是多少？");
-        // FileParser.fileAppend("第三題 : 艾瑪華森電影的平均分數是多少？", outputPath);
-        // System.out.println(movieAnalysis.avgRatingForEmmaWatson());
-        // FileParser.fileAppend(String.valueOf(movieAnalysis.avgRatingForEmmaWatson()), outputPath);
-        // FileParser.fileAppend("", outputPath);
+        System.out.println("第三題 : 艾瑪華森電影的平均分數是多少？");
+        FileParser.fileAppend("第三題 : 艾瑪華森電影的平均分數是多少？", outputPath);
+        System.out.println(movieAnalysis.avgRatingForEmmaWatson());
+        FileParser.fileAppend(String.valueOf(movieAnalysis.avgRatingForEmmaWatson()), outputPath);
+        FileParser.fileAppend("", outputPath);
 
         System.out.println("第四題 : 與演員合作最多的前三名導演");
         FileParser.fileAppend("第四題 : 與演員合作最多的前三名導演", outputPath);
-        int count = 1;
+        count = 1;
         for(String movie : movieAnalysis.top3DirectorsWithMostCollaborations()) {
             System.out.println(count + ". " + movie);
             FileParser.fileAppend(count + ". " + movie, outputPath);
@@ -42,34 +42,34 @@ public class MovieAnalysis {
         }
         FileParser.fileAppend("", outputPath);
 
-        // System.out.println("第五題 : 出演最多類型電影的前兩名演員");
-        // FileParser.fileAppend("第五題 : 出演最多類型電影的前兩名演員", outputPath);
-        // int count = 1;
-        // for(String movie : movieAnalysis.top2ActorsWithMostGenres()) {
-        //     System.out.println(count + ". " + movie);
-        //     FileParser.fileAppend(count + ". " + movie, outputPath);
-        //     count ++;
-        // }
-        // FileParser.fileAppend("", outputPath);
+        System.out.println("第五題 : 出演最多類型電影的前兩名演員");
+        FileParser.fileAppend("第五題 : 出演最多類型電影的前兩名演員", outputPath);
+        count = 1;
+        for(String movie : movieAnalysis.top2ActorsWithMostGenres()) {
+            System.out.println(count + ". " + movie);
+            FileParser.fileAppend(count + ". " + movie, outputPath);
+            count ++;
+        }
+        FileParser.fileAppend("", outputPath);
 
-        // System.out.println("第六題 : 電影中年數差距最大的前三名演員");
-        // FileParser.fileAppend("第六題 : 電影中年數差距最大的前三名演員", outputPath);
-        // int count = 1;
-        // for(String movie : movieAnalysis.top3ActorsWithMaxYearGap()) {
-        //     System.out.println(count + ". " + movie);
-        //     FileParser.fileAppend(count + ". " + movie, outputPath);
-        //     count ++;
-        // }
-        // FileParser.fileAppend("", outputPath);
+        System.out.println("第六題 : 電影中年數差距最大的前三名演員");
+        FileParser.fileAppend("第六題 : 電影中年數差距最大的前三名演員", outputPath);
+        count = 1;
+        for(String movie : movieAnalysis.top3ActorsWithMaxYearGap()) {
+            System.out.println(count + ". " + movie);
+            FileParser.fileAppend(count + ". " + movie, outputPath);
+            count ++;
+        }
+        FileParser.fileAppend("", outputPath);
 
-        // System.out.println("第七題 : 尋找所有與強尼戴普直接和間接合作的演員");
-        // FileParser.fileAppend("第七題 : 尋找所有與強尼戴普直接和間接合作的演員", outputPath);
-        // count = 1;
-        // for(String movie : movieAnalysis.actorsCooperatedWithJohnnyDepp()) {
-        //     System.out.println(count + ". " + movie);
-        //     FileParser.fileAppend(count + ". " + movie, outputPath);
-        //     count ++;
-        // }
+        System.out.println("第七題 : 尋找所有與強尼戴普直接和間接合作的演員");
+        FileParser.fileAppend("第七題 : 尋找所有與強尼戴普直接和間接合作的演員", outputPath);
+        count = 1;
+        for(String movie : movieAnalysis.actorsCooperatedWithJohnnyDepp()) {
+            System.out.println(count + ". " + movie);
+            FileParser.fileAppend(count + ". " + movie, outputPath);
+            count ++;
+        }
     }
 
     private DataDao dao;
@@ -300,30 +300,31 @@ public List<String> top3DirectorsWithMostCollaborations() {
         return topActors;
     }
     
-    // 尋找所有與強尼戴普直接和間接合作的演員
     public Set<String> actorsCooperatedWithJohnnyDepp() {
-        Set<String> cooperatedActors = new HashSet<>();
-        Stack<String> actorStack = new Stack<>();
-        actorStack.push("Johnny Depp");
-        cooperatedActors.add("Johnny Depp");
+        Set<String> cooperatedActors = new HashSet<>();  // 儲存已合作的演員
+        Stack<String> actorStack = new Stack<>();  // 用於遍歷演員
+        actorStack.push("Johnny Depp");  // 開始於強尼戴普
+        cooperatedActors.add("Johnny Depp");  // 將強尼戴普加入已合作名單
     
+        // 深度優先搜尋演員
         while (!actorStack.isEmpty()) {
-            String currentActor = actorStack.pop();
-            for (Map<String, String> movie : dao.getDataList()) {
-                if (movie.get("Actors").contains(currentActor)) {
-                    String[] actors = movie.get("Actors").split("\\|");
+            String currentActor = actorStack.pop();  // 取得目前演員
+            for (Map<String, String> movie : dao.getDataList()) {  // 獲取所有電影資料
+                if (movie.get("Actors").contains(currentActor)) {  // 檢查目前演員是否參與該電影
+                    String[] actors = movie.get("Actors").split("\\|");  // 獲取所有演員
                     for (String actor : actors) {
-                        if (!cooperatedActors.contains(actor)) {
-                            cooperatedActors.add(actor);
-                            actorStack.push(actor);
+                        if (!cooperatedActors.contains(actor)) {  // 如果演員尚未被加入
+                            cooperatedActors.add(actor);  // 將演員加入已合作名單
+                            actorStack.push(actor);  // 將演員推入棧中以進行後續檢查
                         }
                     }
                 }
             }
         }
     
-        return cooperatedActors;
+        return cooperatedActors;  // 返回所有合作的演員
     }
+    
                   
 }
 
