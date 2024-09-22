@@ -190,13 +190,21 @@ def format_output(result_map): # 拼出output
     
     result = []
     for variable, coefficient in record_map.items(): # 各項串接時須注意(1/-1/負數)的表現方式
-        if coefficient < -1:
+        print(f"{variable}" + "/")
+        if variable == "": # 常數
+            if coefficient == -1:
+                result.append(f"{coefficient}")
+            else:
+                result.append(f"+{coefficient}")
+        elif coefficient < -1: # 係數負數
             result.append(f"{coefficient}*{variable}")
-        elif coefficient == -1:
+        elif coefficient == -1: # -1
             result.append(f"-{variable}")
-        elif coefficient == 1:
+        elif coefficient == 1: # 1
             result.append(f"+{variable}")
-        else:
+        elif coefficient == 0: # 0
+            continue
+        else: # 正數
             result.append(f"+{coefficient}*{variable}")
     
     return ''.join(result).lstrip('+') # 將最終的多項式結果格式化為一個字符串，並移除字符串開頭的加號
