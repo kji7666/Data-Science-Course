@@ -1,4 +1,7 @@
 class FileParser:
+    '''
+    string and file parse
+    '''
     # 讀取文件的每一行
     @staticmethod # static => @staticmethod
     def file_reader(file_name):
@@ -50,11 +53,15 @@ class FileParser:
             print(f"文件寫入錯誤: {e}")
 
 class DataDao:
+    '''
+    data store : every line == a map , field mapping value (all string)
+    '''
     def __init__(self, file_name):
         self.line_list = FileParser.file_reader(file_name)  # 讀整個文件 切成list # lines
         self.field_names = FileParser.field_name_getter(self.line_list)  # 取欄位名 # field
         self.data_list = FileParser.data_getter(self.line_list, self.field_names)  # 整理數據 # line list => field mapping data
 
+    # getter
     def get_line_list(self):
         return self.line_list
 
@@ -64,17 +71,21 @@ class DataDao:
     def get_field_names(self):
         return self.field_names
 
-    # 根據指定欄位進行排序
+    # 根據指定field進行sort(限定數值類型)
     def sort_by_value(self, field_name, is_reverse_order):
         if field_name in self.field_names:
             try:
-                # 將字符串轉為浮點數進行排序
+                # string to double進行排序
                 self.data_list.sort(key=lambda data_line_map: float(data_line_map.get(field_name, 0)), 
                                     reverse=is_reverse_order)
             except ValueError:
                 print(f"欄位 '{field_name}' 不是數字類型，無法排序")
 
 class MovieAnalysis:
+    '''
+    anwser
+    '''
+    # attribute : dao
     def __init__(self, file_name):
         self.dao = DataDao(file_name)
 
@@ -288,70 +299,89 @@ class MovieAnalysis:
             for movie in self.dao.get_data_list():
                 if current_actor in movie["Actors"]:
                     actors = [actor.strip() for actor in movie["Actors"].split("|") if actor.strip()]
-                    
                     for actor in actors:
                         if actor not in cooperated_actors:
                             cooperated_actors.add(actor)
                             actor_stack.append(actor)
 
         return sorted(cooperated_actors)  # 按 ASCII 排序返回
+    
+    def actors_cooperated_with_johnny_depp_2(self):
+        depp_cooperated_actors = set(["Johnny Depp"])
+        new_count = 1  # 初始有一位演員（強尼·戴普）
+        while new_count > 0:
+            current_count = len(depp_cooperated_actors)  # 當前合作演員數量
+            new_count = 0  # 重置新增演員計數
 
+            for movie in self.dao.get_data_list():
+                actors = [actor.strip() for actor in movie["Actors"].split("|") if actor.strip()]
+                # 檢查電影中的演員是否有與強尼·戴普合作
+                if any(actor in depp_cooperated_actors for actor in actors):
+                    for actor in actors:
+                        if actor not in depp_cooperated_actors:
+                            depp_cooperated_actors.add(actor)
+                            new_count += 1  # 增加新增演員計數
+
+        depp_cooperated_actors.remove("Johnny Depp")
+        return sorted(depp_cooperated_actors)  # 返回排序後的演員列表
+
+            
 def main():
     output_path = "python\\output.txt"
     movie_analysis = MovieAnalysis("python\\IMDB-Movie-Data.csv")
 
-    # print("第一題 : 2016 年收視率最高的前三部電影的標題") # ok
-    # FileParser.file_append("第一題 : 2016 年收視率最高的前三部電影的標題", output_path)
+    print("第一題 : 2016 年收視率最高的前三部電影的標題") # ok
+    FileParser.file_append("第一題 : 2016 年收視率最高的前三部電影的標題", output_path)
     
-    # count = 1
-    # for movie in movie_analysis.top3_movies_2016():
-    #     print(f"{count}. {movie}")
-    #     FileParser.file_append(f"{count}. {movie}", output_path)
-    #     count += 1
-    # FileParser.file_append("", output_path)
+    count = 1
+    for movie in movie_analysis.top3_movies_2016():
+        print(f"{count}. {movie}")
+        FileParser.file_append(f"{count}. {movie}", output_path)
+        count += 1
+    FileParser.file_append("", output_path)
 
-    # print("第二題 : 平均收入最高的演員")
-    # FileParser.file_append("第二題 : 平均收入最高的演員", output_path)
-    # print(movie_analysis.highest_avg_revenue_actor())
-    # FileParser.file_append(", ".join(movie_analysis.highest_avg_revenue_actor()), output_path)
-    # FileParser.file_append("", output_path)
+    print("第二題 : 平均收入最高的演員")
+    FileParser.file_append("第二題 : 平均收入最高的演員", output_path)
+    print(movie_analysis.highest_avg_revenue_actor())
+    FileParser.file_append(", ".join(movie_analysis.highest_avg_revenue_actor()), output_path)
+    FileParser.file_append("", output_path)
 
-    # print("第三題 : 艾瑪華森電影的平均分數是多少？")
-    # FileParser.file_append("第三題 : 艾瑪華森電影的平均分數是多少？", output_path)
-    # print(movie_analysis.avg_rating_for_emma_watson())
-    # FileParser.file_append(str(movie_analysis.avg_rating_for_emma_watson()), output_path)
-    # FileParser.file_append("", output_path)
+    print("第三題 : 艾瑪華森電影的平均分數是多少？")
+    FileParser.file_append("第三題 : 艾瑪華森電影的平均分數是多少？", output_path)
+    print(movie_analysis.avg_rating_for_emma_watson())
+    FileParser.file_append(str(movie_analysis.avg_rating_for_emma_watson()), output_path)
+    FileParser.file_append("", output_path)
 
-    # top_directors, all_directors_rank = movie_analysis.top_directors_with_collaborations()
+    top_directors, all_directors_rank = movie_analysis.top_directors_with_collaborations()
 
-    # print("前三名導演：", top_directors)
-    # print("所有導演排行榜：")
-    # for director, actors in all_directors_rank:
-    #     print(f"{director}: {len(actors)} 位演員")
+    print("前三名導演：", top_directors)
+    print("所有導演排行榜：")
+    for director, actors in all_directors_rank:
+        print(f"{director}: {len(actors)} 位演員")
 
 
-    # print("第五題 : 出演最多類型電影的前兩名演員")
-    # FileParser.file_append("第五題 : 出演最多類型電影的前兩名演員", output_path)
-    # count = 1
-    # for actor in movie_analysis.top2_actors_with_most_genres():
-    #     print(f"{count}. {actor}")
-    #     FileParser.file_append(f"{count}. {actor}", output_path)
-    #     count += 1
-    # FileParser.file_append("", output_path)
+    print("第五題 : 出演最多類型電影的前兩名演員")
+    FileParser.file_append("第五題 : 出演最多類型電影的前兩名演員", output_path)
+    count = 1
+    for actor in movie_analysis.top2_actors_with_most_genres():
+        print(f"{count}. {actor}")
+        FileParser.file_append(f"{count}. {actor}", output_path)
+        count += 1
+    FileParser.file_append("", output_path)
 
-    # print("第六題 : 電影中年數差距最大的前三名演員")
-    # FileParser.file_append("第六題 : 電影中年數差距最大的前三名演員", output_path)
-    # count = 1
-    # for actor in movie_analysis.top3_actors_with_max_year_gap():
-    #     print(f"{count}. {actor}")
-    #     FileParser.file_append(f"{count}. {actor}", output_path)
-    #     count += 1
-    # FileParser.file_append("", output_path)
+    print("第六題 : 電影中年數差距最大的前三名演員")
+    FileParser.file_append("第六題 : 電影中年數差距最大的前三名演員", output_path)
+    count = 1
+    for actor in movie_analysis.top3_actors_with_max_year_gap():
+        print(f"{count}. {actor}")
+        FileParser.file_append(f"{count}. {actor}", output_path)
+        count += 1
+    FileParser.file_append("", output_path)
 
     print("第七題 : 尋找所有與強尼戴普直接和間接合作的演員")
     FileParser.file_append("第七題 : 尋找所有與強尼戴普直接和間接合作的演員", output_path)
     count = 1
-    for actor in movie_analysis.actors_cooperated_with_johnny_depp():
+    for actor in movie_analysis.actors_cooperated_with_johnny_depp_2():
         print(f"{count}. {actor}")
         FileParser.file_append(f"{count}. {actor}", output_path)
         count += 1

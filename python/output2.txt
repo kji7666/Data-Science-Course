@@ -1,3 +1,21 @@
+Q1:
+top 1 : Dangal
+top 2 : Kimi no na wa
+top 3 : Koe no katachi
+Q2:
+Daisy Ridley, John Boyega, 
+Q3:
+7.175
+Q4:
+top 1 : Ridley Scott
+top 2 : M. Night Shyamalan
+top 3 : Danny Boyle
+Q5:
+top 1 : Brad Pitt, 
+top 2 : Chloe Grace Moretz, Johnny Depp, Amy Adams, Hugh Jackman, Scarlett Johansson, 
+Q6:
+Abbie Cornish, Anne Hathaway, Audrey Tautou, Ben Kingsley, Ben Whishaw, Bob Balaban, Brad Pitt, Bryce Dallas Howard, Chiwetel Ejiofor, Christian Bale, Christopher Plummer, Denzel Washington, Dominic West, Dustin Hoffman, Edward Norton, Ellen Burstyn, Emily Blunt, Eva Green, Gerard Butler, Hugh Jackman, Jack Davenport, Jennifer Aniston, Jennifer Connelly, Jeremy Irons, Jessica Biel, Johnny Depp, Judi Dench, Justin Theroux, Kang-ho Song, Kate Bosworth, Kevin Spacey, Kirsten Dunst, Luke Wilson, Marion Cotillard, Mark Wahlberg, Matt Damon, Maya Rudolph, Meryl Streep, Michelle Monaghan, Morgan Freeman, Owen Wilson, Paula Patton, Rachel Weisz, Russell Crowe, Sacha Baron Cohen, Samuel L. Jackson, Scarlett Johansson, Steve Carell, Tom Cruise, Tom Hanks, Toni Collette, Will Ferrell, Will Smith
+Q7:
 50 Cent
 ?lafur Darri ?lafsson
 ?scar Jaenada
