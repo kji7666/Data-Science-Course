@@ -1,3 +1,8 @@
+DATA_INPUT_PATH = "python/IMDB-Movie-Data.csv"
+
+# 如果你需要output到txt, 請在最下方啟用file append
+output_path = "python\\output.txt"
+
 class FileParser:
     '''
     string and file parse
@@ -89,12 +94,13 @@ class MovieAnalysis:
     def __init__(self, file_name):
         self.dao = DataDao(file_name)
 
+    # 第一題
     def top3_movies_2016(self):
         # 從資料中篩選出2016年的電影並按收視率由高到低排序
-        sorted_movies_2016 = sorted(
+        sorted_movies_2016 = sorted( # for-each 遍歷 movie(every line data) 過濾 : year == 2016
             (movie for movie in self.dao.get_data_list() if movie["Year"] == "2016"),
-            key=lambda movie: float(movie["Rating"]),
-            reverse=True
+            key=lambda movie: float(movie["Rating"]), # key : sort 依據 # movie rating (string to double)
+            reverse=True # 降冪
         )
 
         top_movies = []  # 存放前3名的電影
@@ -103,11 +109,10 @@ class MovieAnalysis:
         for movie in sorted_movies_2016:
             rating = float(movie["Rating"])
 
-            # 如果還沒選滿3部電影，或者當前電影評分等於第3名的評分，則加入結果
+            # 如果還沒選滿3部電影 or 當前電影評分等於第3名的rating, 加入list
             if len(top_movies) < 3 or rating == min_rating_of_top3:
                 top_movies.append(movie["Title"])
-
-                # 如果加入的是第3部電影，記錄下第3名的評分
+                # 如果加入的是第3部電影, 記錄第3名的rating
                 if len(top_movies) == 3:
                     min_rating_of_top3 = rating
             else:
@@ -115,58 +120,44 @@ class MovieAnalysis:
 
         return top_movies
 
-
+    # 第二題
     def highest_avg_revenue_actor(self):
-        # 用於儲存每位演員的收入
-        actor_revenue_map = {}
-
+        actor_revenue_map = {} # actor mapping revenue
         # 遍歷所有電影資料
         for movie in self.dao.get_data_list():
-            actors = [actor.strip() for actor in movie["Actors"].split("|")]
+            actors = [actor.strip() for actor in movie["Actors"].split("|")] # data_list get actors string => split by "|" => strip every actors
             revenue_str = movie.get("Revenue (Millions)")
-
-            # 如果收入資料有效，則記錄每位演員的收入
             if revenue_str:
                 try:
                     revenue = float(revenue_str)
                     for actor in actors:
-                        # 使用 setdefault 來初始化演員的收入列表
+                        # actor => revenue list
                         actor_revenue_map.setdefault(actor, []).append(revenue)
                 except ValueError:
                     print(f"Invalid revenue data: {revenue_str}")
-
-        # 計算每位演員的平均收入
+        # actor => avg revenue
         actor_avg_revenue_map = {
-            actor: sum(revenues) / len(revenues) for actor, revenues in actor_revenue_map.items()
+            actor: sum(revenues) / len(revenues) for actor, revenues in actor_revenue_map.items() # items = entrySet
         }
-
-        # 找出最高的平均收入
         highest_avg_revenue = max(actor_avg_revenue_map.values(), default=0)
-
-        # 找出所有平均收入等於最高平均收入的演員
+        # 找出其他平均收入等於最高平均收入的演員
         highest_avg_revenue_actors = [
             actor for actor, avg_revenue in actor_avg_revenue_map.items() if avg_revenue == highest_avg_revenue
         ]
-
         return highest_avg_revenue_actors
-
 
     # 計算艾瑪華森電影的平均分數
     def avg_rating_for_emma_watson(self):
-        # 找出包含艾瑪華森的電影
         movies_with_emma = [movie for movie in self.dao.get_data_list() if "Emma Watson" in movie["Actors"]]
-        
-        # 提取這些電影的評分
         ratings = []
         for movie in movies_with_emma:
             try:
                 rating = float(movie["Rating"])
                 ratings.append(rating)
             except ValueError:
-                print(f"無效的評分數據: {movie['Rating']}")  # 如果評分無法轉換為浮點數，則輸出錯誤信息
-
+                print(f"無效的評分數據: {movie['Rating']}") 
         # 計算平均評分
-        if ratings:  # 如果有有效的評分
+        if ratings:  # 有效rating
             average_rating = sum(ratings) / len(ratings)
             return average_rating
         else:
@@ -175,10 +166,9 @@ class MovieAnalysis:
     # 與最多不同演員合作的前三名導演及所有導演的排行榜
     def top_directors_with_collaborations(self):
         director_actors_map = {}
-
         for movie in self.dao.get_data_list():
             director = movie["Director"]
-            actors = set(actor.strip() for actor in movie["Actors"].split("|"))  # 使用 set 確保演員不重複
+            actors = set(actor.strip() for actor in movie["Actors"].split("|"))  # set => 演員不重複
             if director in director_actors_map:
                 director_actors_map[director].update(actors)
             else:
@@ -186,14 +176,12 @@ class MovieAnalysis:
 
         sorted_directors = sorted(
             director_actors_map.items(),
-            key=lambda entry: len(entry[1]),  # 根據合作演員數量排序
+            key=lambda entry: len(entry[1]),  # 根據合作演員數量(len(entry[1]))sort
             reverse=True
         )
-
         top_directors = []
-        count = 0
-        min_collaborations_of_top3 = -1
-
+        count = 0 # 數top3
+        min_collaborations_of_top3 = -1 # 目前最低合作人數
         for director, actors in sorted_directors:
             collaborations = len(actors)
             if count < 3 or collaborations == min_collaborations_of_top3:
@@ -204,24 +192,22 @@ class MovieAnalysis:
                         min_collaborations_of_top3 = collaborations
             else:
                 break
-
         return top_directors, sorted_directors
 
-
+    # 第五題 : 出演最多類型電影的前兩名演員
     def top2_actors_with_most_genres(self):
         actor_genres_map = {}
-
         # 收集演員及其演出的不同類型
         for movie in self.dao.get_data_list():
-            actors = [actor.strip() for actor in movie["Actors"].split("|")]  # 去除空格
+            actors = [actor.strip() for actor in movie["Actors"].split("|")]  # 此電影演員名單
             genres = set(movie["Genre"].split("|"))  # 使用 set 自動去重
             for actor in actors:
                 if actor in actor_genres_map:
-                    actor_genres_map[actor].update(genres)
+                    actor_genres_map[actor].update(genres) # 加入map => genres set
                 else:
                     actor_genres_map[actor] = set(genres)
 
-        # 根據不同類型數量排序
+        # 根據不同類型數量(len(entry[1])排序
         sorted_actors = sorted(
             actor_genres_map.items(),
             key=lambda entry: len(entry[1]),
@@ -229,10 +215,10 @@ class MovieAnalysis:
         )
 
         top_actors = []
-        count = 0
+        count = 0 # 同上
         min_genres_of_top2 = -1
 
-        # 找出前兩名演員
+        # 找出前兩名
         for actor, genres in sorted_actors:
             genres_count = len(genres)
             if count < 2 or genres_count == min_genres_of_top2:
@@ -243,31 +229,27 @@ class MovieAnalysis:
                         min_genres_of_top2 = genres_count
             else:
                 break
-
         return top_actors
 
-
+    # 第六題 : 演過(電影年數)差距最大的前三名演員
     def top3_actors_with_max_year_gap(self):
         actor_year_map = {}
-
-        # 收集演員及其出演電影的年份
         for movie in self.dao.get_data_list():
-            actors = [actor.strip() for actor in movie["Actors"].split("|")]  # 去除空格
-            year = int(movie["Year"])
+            actors = [actor.strip() for actor in movie["Actors"].split("|")]  # 此電影演員
+            year = int(movie["Year"]) # 電影年分
             for actor in actors:
                 actor_year_map.setdefault(actor, []).append(year)
 
-        # 計算每位演員的年份差距
+        # 計算每位演員的演過(電影年數)最大差距
         actor_year_gap_list = [
-            (actor, max(years) - min(years))
-            for actor, years in actor_year_map.items() if len(years) > 1  # 確保演員有多部電影
-        ]
+            (actor, max(years) - min(years)) for actor, years in actor_year_map.items() if len(years) > 1  # 確保演員有>=2部電影
+        ] # 前前 對 後後
 
         # 根據年份差距排序
-        sorted_actor_year_gap = sorted(actor_year_gap_list, key=lambda x: x[1], reverse=True)
+        sorted_actor_year_gap = sorted(actor_year_gap_list, key=lambda x: x[1], reverse=True) # [1] == years
 
         top_actors = []
-        count = 0
+        count = 0 # 同上
         min_gap_of_top3 = -1
 
         # 找出前三名演員及其年份差距
@@ -282,109 +264,71 @@ class MovieAnalysis:
                 break
 
         # 印出結果
-        for actor, gap in top_actors:
-            print(f"演員: {actor}, 年份差距: {gap} 年")
+        # for actor, gap in top_actors:
+        #     print(f"演員: {actor}, 年份差距: {gap} 年")
 
         return [actor for actor, gap in top_actors]
 
-
-
-    def actors_cooperated_with_johnny_depp(self):
-        cooperated_actors = set()
-        actor_stack = ["Johnny Depp"]
-        cooperated_actors.add("Johnny Depp")
-
-        while actor_stack:
-            current_actor = actor_stack.pop()
-            for movie in self.dao.get_data_list():
-                if current_actor in movie["Actors"]:
-                    actors = [actor.strip() for actor in movie["Actors"].split("|") if actor.strip()]
-                    for actor in actors:
-                        if actor not in cooperated_actors:
-                            cooperated_actors.add(actor)
-                            actor_stack.append(actor)
-
-        return sorted(cooperated_actors)  # 按 ASCII 排序返回
-    
+    # 第七題 : 尋找所有與強尼戴普直接和間接合作的演員
     def actors_cooperated_with_johnny_depp_2(self):
         depp_cooperated_actors = set(["Johnny Depp"])
-        new_count = 1  # 初始有一位演員（強尼·戴普）
+        new_count = 1  # init : Johnny Depp
+        # 暴力迴圈 直到名單人數不再增加
         while new_count > 0:
-            current_count = len(depp_cooperated_actors)  # 當前合作演員數量
-            new_count = 0  # 重置新增演員計數
+            current_count = len(depp_cooperated_actors) 
+            new_count = 0 # 本次loop增加人數
 
             for movie in self.dao.get_data_list():
                 actors = [actor.strip() for actor in movie["Actors"].split("|") if actor.strip()]
-                # 檢查電影中的演員是否有與強尼·戴普合作
                 if any(actor in depp_cooperated_actors for actor in actors):
                     for actor in actors:
                         if actor not in depp_cooperated_actors:
                             depp_cooperated_actors.add(actor)
-                            new_count += 1  # 增加新增演員計數
+                            new_count += 1  # 
 
-        depp_cooperated_actors.remove("Johnny Depp")
-        return sorted(depp_cooperated_actors)  # 返回排序後的演員列表
+        depp_cooperated_actors.remove("Johnny Depp") # 本人不算
+        return sorted(depp_cooperated_actors)  # ascll sort
 
             
 def main():
-    output_path = "python\\output.txt"
-    movie_analysis = MovieAnalysis("python\\IMDB-Movie-Data.csv")
-
-    print("第一題 : 2016 年收視率最高的前三部電影的標題") # ok
-    FileParser.file_append("第一題 : 2016 年收視率最高的前三部電影的標題", output_path)
-    
+    movie_analysis = MovieAnalysis(DATA_INPUT_PATH)
+    result = ""
+    result += "第一題 : 2016 年收視率最高的前三部電影的標題" + "\n"
     count = 1
     for movie in movie_analysis.top3_movies_2016():
-        print(f"{count}. {movie}")
-        FileParser.file_append(f"{count}. {movie}", output_path)
+        result += str(count) + ". " + movie + "\n"
         count += 1
-    FileParser.file_append("", output_path)
 
-    print("第二題 : 平均收入最高的演員")
-    FileParser.file_append("第二題 : 平均收入最高的演員", output_path)
-    print(movie_analysis.highest_avg_revenue_actor())
-    FileParser.file_append(", ".join(movie_analysis.highest_avg_revenue_actor()), output_path)
-    FileParser.file_append("", output_path)
+    result += "第二題 : 平均收入最高的演員\n"
+    result += ", ".join(movie_analysis.highest_avg_revenue_actor()) + "\n"
 
-    print("第三題 : 艾瑪華森電影的平均分數是多少？")
-    FileParser.file_append("第三題 : 艾瑪華森電影的平均分數是多少？", output_path)
-    print(movie_analysis.avg_rating_for_emma_watson())
-    FileParser.file_append(str(movie_analysis.avg_rating_for_emma_watson()), output_path)
-    FileParser.file_append("", output_path)
+    result += "第三題 : 艾瑪華森電影的平均分數是多少？\n"
+    result += str(movie_analysis.avg_rating_for_emma_watson()) + "\n"
 
+    result += "前三名導演" + "\n"
     top_directors, all_directors_rank = movie_analysis.top_directors_with_collaborations()
+    for director in top_directors:
+        result += director + "\n"
 
-    print("前三名導演：", top_directors)
-    print("所有導演排行榜：")
-    for director, actors in all_directors_rank:
-        print(f"{director}: {len(actors)} 位演員")
-
-
-    print("第五題 : 出演最多類型電影的前兩名演員")
-    FileParser.file_append("第五題 : 出演最多類型電影的前兩名演員", output_path)
+    result += "第五題 : 出演最多類型電影的前兩名演員\n"
     count = 1
     for actor in movie_analysis.top2_actors_with_most_genres():
-        print(f"{count}. {actor}")
-        FileParser.file_append(f"{count}. {actor}", output_path)
+        result += str(count) + ". " + actor + "\n"
         count += 1
-    FileParser.file_append("", output_path)
 
-    print("第六題 : 電影中年數差距最大的前三名演員")
-    FileParser.file_append("第六題 : 電影中年數差距最大的前三名演員", output_path)
+    result += "第六題 : 電影中年數差距最大的前三名演員\n"
     count = 1
     for actor in movie_analysis.top3_actors_with_max_year_gap():
-        print(f"{count}. {actor}")
-        FileParser.file_append(f"{count}. {actor}", output_path)
+        result += str(count) + ". " + actor + "\n"
         count += 1
-    FileParser.file_append("", output_path)
 
-    print("第七題 : 尋找所有與強尼戴普直接和間接合作的演員")
-    FileParser.file_append("第七題 : 尋找所有與強尼戴普直接和間接合作的演員", output_path)
+    result += "第七題 : 尋找所有與強尼戴普直接和間接合作的演員\n"
     count = 1
     for actor in movie_analysis.actors_cooperated_with_johnny_depp_2():
-        print(f"{count}. {actor}")
-        FileParser.file_append(f"{count}. {actor}", output_path)
+        result += str(count) + ". " + actor + "\n"
         count += 1
 
+    # FileParser.file_append(result, output_path)
+    print(result)
 
 main()
